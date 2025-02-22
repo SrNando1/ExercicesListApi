@@ -1,20 +1,23 @@
 const express = require('express');
 const cors = require('cors');
 const { MongoClient } = require('mongodb');
+require('dotenv').config(); // Carrega variáveis de ambiente do arquivo .env
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // URI de conexão do MongoDB (substitua com a sua)
-const uri = "mongodb+srv://fernandosantosav135:Fernando%401@cluster0.hukyw.mongodb.net/fitness_app?retryWrites=true&w=majority&appName=Cluster0";
-const client = new MongoClient(uri);
+const uri = process.env.MONGODB_URI; // Use variáveis de ambiente para a URI
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 let db;
 
 // Configurar middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || '*' // Restrinja o CORS a origens específicas
+}));
 
-// Conectar ao banco de dados apenas uma vez
+// Conectar ao banco de dados
 async function connectDB() {
   try {
     console.log("Tentando conectar ao MongoDB...");
@@ -34,9 +37,8 @@ app.get('/', (req, res) => {
 
 // Rota para obter os exercícios
 app.get("/exercises", async (req, res) => {
-  // Verificar se a conexão com o banco de dados foi realizada
   if (!db) {
-    return res.status(500).json({ error: 'Banco de dados não está conectado' });
+    return res.status(503).json({ error: 'Banco de dados não está conectado' });
   }
 
   try {
@@ -68,4 +70,5 @@ connectDB() // Conecta ao banco de dados antes de iniciar o servidor
   })
   .catch((err) => {
     console.error("Falha ao conectar ao banco de dados:", err);
+    process.exit(1); // Encerra o processo se não conseguir conectar ao banco de dados
   });

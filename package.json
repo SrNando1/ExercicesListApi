@@ -4,8 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "azure webapp up"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
@@ -15,7 +14,6 @@
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "mongodb": "^6.13.0",
-    "mysql2": "^3.12.0",
-    "azure-cli": "latest"
+    "mysql2": "^3.12.0"
   }
 }

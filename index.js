@@ -60,7 +60,12 @@ app.use((err, req, res, next) => {
 });
 
 // Iniciar o servidor e conectar ao banco
-app.listen(PORT, async () => {
-  await connectDB(); // Aguarda a conexão ao banco de dados antes de iniciar o servidor
-  console.log(`Servidor rodando na porta ${PORT}`);
-});
+connectDB() // Conecta ao banco de dados antes de iniciar o servidor
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Servidor rodando na porta ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Falha ao conectar ao banco de dados:", err);
+  });

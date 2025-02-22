@@ -35,14 +35,14 @@ app.get('/', (req, res) => {
   res.send('API está funcionando corretamente no Azure!');
 });
 
-// Rota para obter os exercícios
+// Rota para obter os exercícios de peito
 app.get("/exercises", async (req, res) => {
   if (!db) {
     return res.status(503).json({ error: 'Banco de dados não está conectado' });
   }
 
   try {
-    const collection = db.collection("exercicios"); // Nome da coleção
+    const collection = db.collection("peito"); // Nome da coleção
     const exercises = await collection.find({}).toArray(); // Busca todos os exercícios
     res.json(exercises);
   } catch (err) {

@@ -6,7 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // URI de conexão do MongoDB (substitua com a sua)
-const uri = "mongodb+srv://<seu_usuario>:<sua_senha>@cluster0.hukyw.mongodb.net/fitness_app?retryWrites=true&w=majority";
+const uri = "mongodb+srv://fernandosav135:Fernando%401@cluster0.hukyw.mongodb.net/fitness_app?retryWrites=true&w=majority";
 const client = new MongoClient(uri);
 let db;
 
@@ -18,7 +18,7 @@ app.use(cors());
 async function connectDB() {
   try {
     await client.connect();
-    db = client.db("fitness_app"); // Certifique-se de que este é o nome correto do banco
+    db = client.db("fitness_app"); // Nome correto da base de dados
     console.log("Conectado ao MongoDB Atlas");
   } catch (err) {
     console.error("Erro ao conectar ao MongoDB:", err);
@@ -33,7 +33,7 @@ app.get('/', (req, res) => {
 // Rota para obter os exercícios
 app.get("/exercises", async (req, res) => {
   try {
-    const collection = db.collection("fitness_app"); // Verifique o nome correto da coleção
+    const collection = db.collection("fitness_app"); // Nome correto da coleção
     const exercises = await collection.find({}).toArray();
     res.json(exercises);
   } catch (err) {

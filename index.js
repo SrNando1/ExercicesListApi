@@ -17,6 +17,7 @@ app.use(cors());
 // Conectar ao banco de dados apenas uma vez
 async function connectDB() {
   try {
+    console.log("Tentando conectar ao MongoDB...");
     await client.connect();
     db = client.db("fitness_app"); // Nome da base de dados
     console.log("Conectado ao MongoDB Atlas");
@@ -35,11 +36,11 @@ app.get('/', (req, res) => {
 app.get("/exercises", async (req, res) => {
   // Verificar se a conexão com o banco de dados foi realizada
   if (!db) {
-    return res.status(500).json({ error: 'Não foi possível conectar ao banco de dados' });
+    return res.status(500).json({ error: 'Banco de dados não está conectado' });
   }
 
   try {
-    const collection = db.collection("fitness_app"); // Nome da coleção (fitness_app, no seu caso)
+    const collection = db.collection("fitness_app"); // Nome da coleção
     const exercises = await collection.find({}).toArray(); // Busca todos os exercícios
     res.json(exercises);
   } catch (err) {

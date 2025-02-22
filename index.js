@@ -6,7 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // URI de conexão do MongoDB (substitua com a sua)
-const uri = process.env.MONGODB_URI;
+const uri = "mongodb+srv://fernandosantosav135:Fernando%401@cluster0.hukyw.mongodb.net/fitness_app?retryWrites=true&w=majority&appName=Cluster0";
 const client = new MongoClient(uri);
 let db;
 
@@ -29,7 +29,7 @@ async function connectDB() {
 
 // Rota principal para teste
 app.get('/', (req, res) => {
-    res.send('API está funcionando corretamente no Azure!');
+  res.send('API está funcionando corretamente no Azure!');
 });
 
 // Rota para obter os exercícios
@@ -40,7 +40,7 @@ app.get("/exercises", async (req, res) => {
   }
 
   try {
-    const collection = db.collection("fitness_app"); // Nome da coleção
+    const collection = db.collection("exercicios"); // Nome da coleção
     const exercises = await collection.find({}).toArray(); // Busca todos os exercícios
     res.json(exercises);
   } catch (err) {
@@ -50,13 +50,13 @@ app.get("/exercises", async (req, res) => {
 
 // Tratamento de erro para rotas inexistentes
 app.use((req, res, next) => {
-    res.status(404).json({ error: 'Rota não encontrada' });
+  res.status(404).json({ error: 'Rota não encontrada' });
 });
 
 // Tratamento de erro genérico
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: 'Erro interno do servidor' });
+  console.error(err.stack);
+  res.status(500).json({ error: 'Erro interno do servidor' });
 });
 
 // Iniciar o servidor e conectar ao banco

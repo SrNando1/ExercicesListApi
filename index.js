@@ -7,7 +7,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // URI de conexão do MongoDB (substitua com a sua)
-const uri = process.env.MONGODB_URI; // Use variáveis de ambiente para a URI
+const uri = mongodb+srv://fernandosantosav135:Fernando%401@cluster0.hukyw.mongodb.net/fitness_app?retryWrites=true&w=majority&appName=Cluster0
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 let db;
 
@@ -44,7 +44,7 @@ app.get("/peito", async (req, res) => {
   try {
     const collection = db.collection("peito"); // Nome da coleção
     const peito = await collection.find({}).toArray(); // Busca todos os exercícios
-    res.json(peito);
+    res.json(peito); // Retorna os dados corretamente
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -17,8 +17,8 @@ let client;
 let db;
 
 async function connectDB() {
-  if (!client) {
-    try {
+  try {
+    if (!client || !client.topology || !client.topology.isConnected()) {
       client = new MongoClient(uri, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -26,17 +26,21 @@ async function connectDB() {
       await client.connect();
       db = client.db("fitness_app");
       console.log("✅ Conectado ao MongoDB Atlas");
-    } catch (error) {
-      console.error("❌ Erro ao conectar ao MongoDB:", error);
-      process.exit(1); // Para a aplicação se a conexão falhar
     }
+    return db;
+  } catch (error) {
+    console.error("❌ Erro ao conectar ao MongoDB:", error);
+    return null; // Evita quebrar a API
   }
 }
 
 // Middleware para garantir que a conexão esteja ativa
 app.use(async (req, res, next) => {
   if (!db) {
-    await connectDB();
+    db = await connectDB();
+  }
+  if (!db) {
+    return res.status(500).json({ error: "Falha ao conectar ao banco de dados" });
   }
   next();
 });
@@ -44,6 +48,9 @@ app.use(async (req, res, next) => {
 // Rota principal - Retorna os dados da coleção "peito"
 app.get("/", async (req, res) => {
   try {
+    if (!db) {
+      return res.status(500).json({ error: "Banco de dados não disponível" });
+    }
     const collection = db.collection("peito");
     const peito = await collection.find({}).toArray();
     res.json(peito);
@@ -54,6 +61,10 @@ app.get("/", async (req, res) => {
 
 // Iniciar o servidor
 app.listen(PORT, async () => {
-  await connectDB();
+  db = await connectDB();
+  if (!db) {
+    console.error("❌ Não foi possível conectar ao banco. API não iniciada.");
+    process.exit(1); // Encerra o servidor se não houver banco
+  }
   console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });

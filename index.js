@@ -1,20 +1,19 @@
 const express = require('express');
 const cors = require('cors');
 const { MongoClient } = require('mongodb');
-require('dotenv').config(); // Carrega variáveis de ambiente do arquivo .env
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// URI de conexão do MongoDB (substitua com a sua)
-const uri = mongodb+srv://fernandosantosav135:Fernando%401@cluster0.hukyw.mongodb.net/fitness_app?retryWrites=true&w=majority&appName=Cluster0
+// URI de conexão do MongoDB (string direta)
+const uri = "mongodb+srv://fernandosantosav135:Fernando%401@cluster0.hukyw.mongodb.net/fitness_app?retryWrites=true&w=majority&appName=Cluster0";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 let db;
 
 // Configurar middleware
 app.use(express.json());
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || '*' // Restrinja o CORS a origens específicas
+  origin: '*' // Permite todas as origens (não recomendado para produção)
 }));
 
 // Conectar ao banco de dados

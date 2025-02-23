@@ -18,20 +18,32 @@ let db;
 
 async function connectDB() {
   if (!client) {
-    client = new MongoClient(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    await client.connect();
-    db = client.db("fitness_app");
-    console.log("✅ Conectado ao MongoDB Atlas");
+    try {
+      client = new MongoClient(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      });
+      await client.connect();
+      db = client.db("fitness_app");
+      console.log("✅ Conectado ao MongoDB Atlas");
+    } catch (error) {
+      console.error("❌ Erro ao conectar ao MongoDB:", error);
+      process.exit(1); // Para a aplicação se a conexão falhar
+    }
   }
 }
+
+// Middleware para garantir que a conexão esteja ativa
+app.use(async (req, res, next) => {
+  if (!db) {
+    await connectDB();
+  }
+  next();
+});
 
 // Rota principal - Retorna os dados da coleção "peito"
 app.get("/", async (req, res) => {
   try {
-    await connectDB();
     const collection = db.collection("peito");
     const peito = await collection.find({}).toArray();
     res.json(peito);

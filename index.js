@@ -36,7 +36,7 @@ app.get('/', (req, res) => {
 });
 
 // Rota para obter os exercícios de peito
-app.get("/exercises", async (req, res) => {
+app.get("/peito", async (req, res) => {
   if (!db) {
     return res.status(503).json({ error: 'Banco de dados não está conectado' });
   }

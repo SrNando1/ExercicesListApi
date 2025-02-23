@@ -10,9 +10,17 @@ app.use(express.json());
 app.use(cors());
 
 // Rota principal
-app.get('/', (req, res) => {
-  res.send('API está funcionando corretamente no Azure!');
+app.get('/', async (req, res) => {
+  try {
+    const db = client.db("fitness_app");
+    const collection = db.collection("peito");
+    const peito = await collection.find({}).toArray();
+    res.json(peito);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
+
 
 // Conectar ao MongoDB
 const uri = "mongodb+srv://fernandosantosav135:Fernando%401@cluster0.hukyw.mongodb.net/fitness_app?retryWrites=true&w=majority&appName=Cluster0";

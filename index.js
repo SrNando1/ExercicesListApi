@@ -1,6 +1,6 @@
-const express = require('express');
-const cors = require('cors');
-const { MongoClient } = require('mongodb');
+const express = require("express");
+const cors = require("cors");
+const { MongoClient } = require("mongodb");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -9,36 +9,29 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cors());
 
-// Rota principal
-app.get('/', async (req, res) => {
-  try {
-    const db = client.db("fitness_app");
-    const collection = db.collection("peito");
-    const peito = await collection.find({}).toArray();
-    res.json(peito);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-
 // Conectar ao MongoDB
-const uri = "mongodb+srv://fernandosantosav135:Fernando%401@cluster0.hukyw.mongodb.net/fitness_app?retryWrites=true&w=majority&appName=Cluster0";
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+const uri =
+  "mongodb+srv://fernandosantosav135:Fernando%401@cluster0.hukyw.mongodb.net/fitness_app?retryWrites=true&w=majority&appName=Cluster0";
+
+let client;
+let db;
 
 async function connectDB() {
-  try {
+  if (!client) {
+    client = new MongoClient(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
     await client.connect();
-    console.log("Conectado ao MongoDB Atlas");
-  } catch (err) {
-    console.error("Erro ao conectar ao MongoDB:", err);
+    db = client.db("fitness_app");
+    console.log("✅ Conectado ao MongoDB Atlas");
   }
 }
 
-// Rota para obter os exercícios de peito
-app.get("/peito", async (req, res) => {
+// Rota principal - Retorna os dados da coleção "peito"
+app.get("/", async (req, res) => {
   try {
-    const db = client.db("fitness_app");
+    await connectDB();
     const collection = db.collection("peito");
     const peito = await collection.find({}).toArray();
     res.json(peito);
@@ -48,8 +41,7 @@ app.get("/peito", async (req, res) => {
 });
 
 // Iniciar o servidor
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
-  });
+app.listen(PORT, async () => {
+  await connectDB();
+  console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });

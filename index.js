@@ -44,7 +44,7 @@ app.get("/exercises", async (req, res) => {
   try {
     const collection = db.collection("peito"); // Nome da coleção
     const exercises = await collection.find({}).toArray(); // Busca todos os exercícios
-    res.json(exercises);
+    res.json(peito);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

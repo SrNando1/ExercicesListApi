@@ -18,7 +18,8 @@ app.get("/", (req, res) => {
 });
 
 // Definir porta e iniciar servidor
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080; // Usa a porta do Azure ou 8080 por padrão
 app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+    console.log(`Servidor rodando na porta ${PORT}`);
 });
+
